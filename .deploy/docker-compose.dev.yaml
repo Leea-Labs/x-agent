@@ -1,0 +1,22 @@
+volumes:
+  chroma_data:
+  node_modules:
+
+services:
+  worker:
+    build:
+      context: ../
+      dockerfile: .deploy/Dockerfile
+    depends_on:
+      - chroma
+    volumes:
+      - ../:/opt/app
+      - node_modules:/opt/app/node_modules
+    command: ['npm', 'start']
+
+  chroma:
+    image: ghcr.io/chroma-core/chroma:latest
+    ports:
+      - '8000:8000'
+    volumes:
+      - chroma_data:/chroma
