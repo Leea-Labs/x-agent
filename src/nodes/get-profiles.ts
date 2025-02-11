@@ -10,7 +10,11 @@ export const getProfiles = async (state: BuilderState): Promise<Partial<BuilderS
 
     ${state.profilesToFind}
     `,
-    z.object({profiles: z.array(z.string())})
+    z.object({
+      profiles: z.array(
+        z.string({description: `Twitter screen_name with no spaces, braces etc. e.g: '@elonmusk' or '@finkd'`})
+      ),
+    })
   )
 
   state.logger(`Found: ${response.profiles.toString()}`)
