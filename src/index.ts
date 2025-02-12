@@ -8,9 +8,8 @@ process.on('unhandledRejection', (rejection) => {
 })
 
 import {runWorkflow} from './workflow'
-import {ExecutionContext, LeeaAgent} from '@leealabs/agent-js-sdk'
+import {LeeaAgent} from '@leealabs/agent-js-sdk'
 import {z} from 'zod'
-import {InputData} from './types/schema'
 import {appConfig} from './config'
 
 const main = async () => {
@@ -24,16 +23,15 @@ const main = async () => {
       "summarizer": "Define what is trending and predict future. Create post for X"
     }`,
     inputSchema: z.object({
-      id: z.string().optional(),
-      profilesToFind: z.string(),
-      summarizer: z.string(),
+      profilesToFind: z.string({description: 'Description of twitter profiles to parse'}),
+      summarizer: z.string({description: 'Prompt to summarize posts after fetching'}),
     }),
     outputSchema: z.string(),
     secretPath: './id.json',
     apiToken: appConfig.LEEA_API_TOKEN,
-    requestHandler: (context: ExecutionContext, data: InputData) =>
-      runWorkflow((message) => agent.log(message, context.requestId), data),
+    requestHandler: runWorkflow,
     displayName: 'Twitter searcher',
+    avatarPath: './logo.png',
   })
 }
 

@@ -5,6 +5,7 @@ import {summarize} from './nodes/summarize'
 import {collect} from './nodes/collect'
 import {InputData} from './types/schema'
 import {getDB} from './services/db'
+import {RequestHandler} from '@leealabs/agent-js-sdk'
 
 const workflow = new StateGraph(StateAnnotation)
   .addNode('getProfiles', getProfiles)
@@ -19,12 +20,12 @@ const threadConfig = {configurable: {thread_id: '42'}}
 
 const app = workflow.compile({checkpointer})
 
-export const runWorkflow = async (logger: (message: string) => void, data: InputData) => {
+export const runWorkflow: RequestHandler = async (data: InputData, ctx) => {
   const response = await app.invoke(
     {
       profilesToFind: data.profilesToFind,
       summarizer: data.summarizer,
-      logger,
+      logger: ctx.log,
       store: getDB(data.id),
     },
     threadConfig

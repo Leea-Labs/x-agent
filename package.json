@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "LEEA_API_URL=http://host.docker.internal:1209 LEEA_WS_URL=ws://host.docker.internal:1211 nodemon -L ./src/index.ts",
+    "start": "nodemon -L ./src/index.ts",
     "build": "rm -rf dist && mkdir dist && tsc -p ."
   },
   "author": "",
@@ -15,7 +15,7 @@
     "@langchain/core": "^0.3.30",
     "@langchain/langgraph": "^0.2.39",
     "@langchain/openai": "^0.3.17",
-    "@leealabs/agent-js-sdk": "^1.0.8",
+    "@leealabs/agent-js-sdk": "^1.0.11",
     "axios": "^1.7.9",
     "chromadb": "^1.10.4",
     "cors": "^2.8.5",
