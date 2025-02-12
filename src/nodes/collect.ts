@@ -6,8 +6,9 @@ import {api} from '../api'
 export const collect = async (state: BuilderState) => {
   const chunks = chunkArray(state.usernames, 5)
   for (const chunk of chunks) {
+    state.logger(`Collecting tweets for: ${chunk.join(', ')}`)
+    let tweetsCollectedQty = 0
     const chunkPromises = chunk.map(async (user) => {
-      state.logger(`Collecting tweets for ${user}`)
       try {
         const result = await api.userTweets({
           payload: {
@@ -19,7 +20,8 @@ export const collect = async (state: BuilderState) => {
           return
         }
 
-        state.logger(`Got ${result.tweets.length} tweets. Saving`)
+        tweetsCollectedQty += result.tweets.length
+
         const docs = result.tweets.map(
           (tweet) =>
             new Document({
@@ -28,11 +30,10 @@ export const collect = async (state: BuilderState) => {
         )
         state.store.addDocuments(docs)
       } catch (error) {
-        state.logger(`Got no tweets`)
         console.log(error?.message)
       }
     })
-
+    state.logger(`Collected and saved ${tweetsCollectedQty} tweets`)
     await Promise.all(chunkPromises)
   }
 }
