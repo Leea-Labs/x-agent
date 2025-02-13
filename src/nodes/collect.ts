@@ -32,8 +32,9 @@ export const collect = async (state: BuilderState) => {
       } catch (error) {
         console.log(error?.message)
       }
+      state.logger(`Collected and saved ${tweetsCollectedQty} tweets`)
     })
-    state.logger(`Collected and saved ${tweetsCollectedQty} tweets`)
+
     await Promise.all(chunkPromises)
   }
 }
