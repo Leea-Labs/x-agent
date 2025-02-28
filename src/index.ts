@@ -9,7 +9,7 @@ process.on('unhandledRejection', (rejection) => {
 
 import {runWorkflow} from './workflow'
 import {LeeaAgent} from '@leealabs/agent-js-sdk'
-import {z} from 'zod'
+import {AgentInputSchema, AgentOutputSchema} from './types'
 import {appConfig} from './config'
 
 const main = async () => {
@@ -17,16 +17,28 @@ const main = async () => {
   await agent.initialize({
     name: 'twitter',
     fee: 10000,
-    description: `I can analyze X. Give me a description of profiles to find and what do you want as a result. For example: 
+    description: `I can analyze X (Twitter) in two modes:
+    1. Profile Analysis - find and analyze specific Twitter profiles
+    2. Topic Search - search for tweets about specific topics
+    
+    Example for Profile Analysis:
     {
+      "mode": "profile_analysis",
       "profilesToFind": "Top 100 AI influencers",
       "summarizer": "Define what is trending and predict future. Create post for X"
+    }
+    
+    Example for Topic Search:
+    {
+      "mode": "topic_search",
+      "query": "artificial intelligence",
+      "filters": {
+        "fromDate": "2024-01-01",
+        "limit": 50
+      }
     }`,
-    inputSchema: z.object({
-      profilesToFind: z.string({description: 'Description of twitter profiles to parse'}),
-      summarizer: z.string({description: 'Prompt to summarize posts after fetching'}),
-    }),
-    outputSchema: z.string(),
+    inputSchema: AgentInputSchema,
+    outputSchema: AgentOutputSchema,
     secretPath: './id.json',
     apiToken: appConfig.LEEA_API_TOKEN,
     requestHandler: runWorkflow,
